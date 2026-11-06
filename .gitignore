@@ -203,3 +203,6 @@ dist
 
 # Local research and verification artifacts
 .audit/
+
+# Local documentation (do not upload)
+/docs/
