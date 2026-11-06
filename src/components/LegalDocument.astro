@@ -1,0 +1,7 @@
+---
+import {site} from '../config/site';
+interface Props { paragraphs: string[]; }
+const {paragraphs}=Astro.props;
+const resolve=(text:string)=>text.replaceAll('{{email}}',site.email).replaceAll('{{phone}}',site.phone);
+---
+<div class="prose">{paragraphs.map(text=>/^\d+\s+[^\d]/.test(text)||text==='特别提示'?<h2>{resolve(text)}</h2>:<p>{resolve(text)}</p>)}</div>

@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/SiteLayout.astro';
+import HelpSidebar from '../../components/HelpSidebar.astro';
+import docs from '../../data/help.json';
+const groups = [...new Set(docs.map(d=>d.group))];
+---
+<Layout title="帮助中心：安装、聊天翻译与账户指南" description="在译想帮助中心查找安装注册、聊天翻译、引擎选择、快捷回复、套餐订单与系统设置指南，所有文档均可在本站直接阅读。">
+<section class="container page-hero"><p class="eyebrow">帮助中心 / HELP CENTER</p><h1>译想<span>帮助中心。</span></h1><p>使用文档、常见问题和故障排查。</p><label class="sr-only" for="help-query">搜索帮助文档</label><input type="search" id="help-query" class="help-search" placeholder="搜索帮助，例如：注册、翻译设置、套餐" autocomplete="off" aria-controls="help-results"/><p class="fine" id="result-count" role="status" aria-live="polite">共 {docs.length} 篇使用指南</p></section>
+<div class="container help-layout"><HelpSidebar/><div id="help-results">{groups.map(g=><section class="help-group" data-help-group><h2>{g}</h2><div class="help-links">{docs.filter(d=>d.group===g).map(d=><a href={`/help/${d.slug}/`} data-help-item data-search={`${d.title} ${d.description} ${d.group}`}><strong>{d.title}</strong><span aria-hidden="true">↗</span></a>)}</div></section>)}<p id="help-empty" class="empty-state" hidden>没有匹配的文档。试试其他关键词，或 <a class="text-link" href="/contact/">联系官方客服 →</a></p><p class="fine">菜单名称和可用功能以当前版本为准。</p></div></div>
+<script is:inline src="/scripts/help-search.js" defer></script>
+</Layout>

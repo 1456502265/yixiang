@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/SiteLayout.astro';
+import SystemIcon from '../components/SystemIcon.astro';
+import { downloads, isDownloadReady } from '../config/downloads';
+---
+<Layout title="软件下载：Windows 与 macOS 版本说明" description="查看译想 Windows 和 macOS 版本要求、下载状态、安装步骤与安全核验说明。安装前确认发布者及版本，遇到安全警告请暂停安装并联系支持。">
+<section class="container page-hero"><p class="eyebrow">软件下载 / DOWNLOAD</p><h1>下载<span>译想。</span></h1><p>译想桌面客户端 · Windows 与 macOS</p></section>
+<section class="container section compact"><div class="notice"><strong>下载说明</strong><p>请根据系统选择对应版本下载。安装前请核对文件来源和发布者。</p></div><div class="three-grid download-grid">{downloads.map(d=><article class="download-card"><SystemIcon system={d.id.startsWith('windows') ? 'windows' : 'apple'} /><h2>{d.name}</h2><span class="tag">{d.architecture}</span><p>适用于 {d.system}</p><p class="fine">{d.requirements}</p>{isDownloadReady(d)?<>{(d.version || d.size || d.released || d.publisher) && <dl>{d.version && <><dt>版本</dt><dd>{d.version}</dd></>}{d.size && <><dt>大小</dt><dd>{d.size}</dd></>}{d.released && <><dt>发布日期</dt><dd>{d.released}</dd></>}{d.publisher && <><dt>发布者</dt><dd>{d.publisher}</dd></>}</dl>}<a class="button" href={d.url}>下载 {d.name} ↓</a>{d.sha256 && <details><summary>查看 SHA-256 校验值</summary><code class="checksum">{d.sha256}</code></details>}</>:<><p class="fine">暂未开放直接下载</p><a class="button secondary" href="/contact/">咨询版本与试用 ↗</a></>}</article>)}</div></section>
+<section class="section soft"><div class="container"><div class="section-heading"><h2>安装步骤</h2></div><div class="steps"><div><span>01</span><h3>确认来源</h3><p>从官方公布的渠道获取对应系统版本，核对版本、发布者与文件校验值。</p></div><div><span>02</span><h3>确认安装</h3><p>阅读安装步骤与权限说明。如果系统或安全软件报警，请暂停安装并联系支持。</p></div><div><span>03</span><h3>注册并使用</h3><p>阅读服务协议与隐私政策，注册后添加已授权的应用账号，先测试翻译效果。</p></div></div></div></section>
+<section class="section container prose narrow"><h2>安装与使用常见问题</h2><details><summary>支持哪些系统版本？</summary><p>Windows 版支持 Windows 7 / 8 / 10 / 11；MacOS 版支持 M 系列芯片和 Intel 芯片的 Mac，系统要求 MacOS 11 及以上。</p></details><details><summary>安装需要什么配置？</summary><p>最低配置：4GB 内存，2GB 可用硬盘空间。推荐配置：8GB 内存及以上，以保证多账号同时使用时的流畅体验。</p></details><details><summary>出现安全警告怎么办？</summary><p>请停止安装，记录提示、文件名称和版本，并通过官方联系方式核实。不要关闭杀毒软件或绕过系统保护。签名本身也不等同于安全保证。</p></details><details><summary>如何卸载？</summary><p>Windows 可在“设置 → 应用”中查找译想并卸载；macOS 可退出应用后从“应用程序”移除。删除本地数据前请备份需要保留的内容。如仍有组件残留，请联系支持。</p></details><details><summary>支持多台设备同时在线吗？</summary><p>一个账号不支持多设备同时在线，可以在不同设备上轮流使用，具体以当前版本为准。</p></details><a href="/help/kaishishiyong/xiazaianzhuangheqidong/" class="text-link">查看完整安装帮助 →</a></section>
+</Layout>
+
+<style>
+  .download-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 1100px) { .download-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .download-grid { grid-template-columns: 1fr; } }
+</style>

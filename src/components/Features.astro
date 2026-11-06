@@ -1,0 +1,4 @@
+---
+import { features } from '../data/product';
+---
+<div class="feature-grid">{features.map(([title,description,img]) => <article class="feature"><img src={`/images/${img}`} alt="" width="52" height="52" loading="lazy"/><h3>{title}</h3><p>{description}</p></article>)}</div>

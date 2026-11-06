@@ -1,0 +1,5 @@
+---
+import { platforms } from '../data/product';
+---
+<div class="platform-grid">{platforms.map(([name,img]) => <div><img src={`/images/${img}`} alt="" loading="lazy" width="42" height="42"/><span>{name}</span></div>)}</div>
+<p class="fine center">平台支持情况以当前版本为准。第三方商标属于各自权利人。</p>

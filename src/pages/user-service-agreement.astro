@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/SiteLayout.astro';
+import LegalDocument from '../components/LegalDocument.astro';
+import paragraphs from '../data/user-service-agreement.json';
+---
+<Layout title="用户服务协议：软件使用与服务条款" description="阅读译想软件现有用户服务协议，了解使用许可、服务费用、账户责任、数据处理、期限终止及争议处理条款。">
+<section class="container page-hero"><p class="eyebrow">服务协议 / TERMS</p><h1>用户服务协议。</h1><p>以下为原官网已公开的软件协议条款。注册、安装或购买前，请结合客户端当前版本的协议与具体订单条款阅读。</p></section><article class="container narrow legal-body"><LegalDocument paragraphs={paragraphs}/><p class="fine">本页面展示协议不代表你已作出同意。使用或购买客户端服务时，请在相应流程中自主确认。</p></article>
+</Layout>

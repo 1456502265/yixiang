@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/SiteLayout.astro';
+import { site } from '../config/site';
+---
+<Layout title="联系我们：产品咨询与团队服务" description="通过译想官方电话、邮箱、微信、WhatsApp 或 Telegram 联系客服，咨询产品、团队采购、费用与使用问题。查看运营主体及服务时间。">
+<section class="container page-hero"><p class="eyebrow">联系我们 / CONTACT</p><h1>联系<span>我们。</span></h1><p>想了解团队采购，或者不知道选哪个套餐？请联系我们。</p></section>
+<section class="container section compact"><div class="three-grid contact-cards">{site.channels.map(c=><article><h2>{c.name}</h2><p>{c.label}</p><img src={c.qr} alt={`${c.name}官方客服二维码`} width="200" height="200" loading="lazy"/><a class="button secondary" href={c.href} rel="noopener noreferrer">{c.name==='微信客服'?'查看微信二维码':'打开 '+c.name} ↗</a></article>)}</div><p class="fine">点击 WhatsApp 或 Telegram 将前往第三方服务，使用时适用对应平台的隐私政策。</p></section>
+<section class="section soft"><div class="container contact-info"><div><p class="eyebrow">企业信息</p><h2>官方客服</h2><p>服务时间：{site.hours}</p><p>非工作时间可通过邮箱留言。</p><a class="large-link" href={site.phoneHref}>{site.phone}</a><a class="text-link" href={`mailto:${site.email}`}>{site.email} ↗</a></div><dl><dt>运营主体</dt><dd>{site.company}</dd><dt>办公地址</dt><dd>{site.address}</dd><dt>反馈建议</dt><dd>请说明所用系统、客户端版本与问题发生步骤；请勿发送密码、验证码或完整的私人聊天记录。</dd></dl></div></section>
+</Layout>

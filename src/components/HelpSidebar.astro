@@ -1,0 +1,6 @@
+---
+import docs from '../data/help.json';
+const groups = [...new Set(docs.map(d=>d.group))];
+const current = Astro.url.pathname;
+---
+<aside class="help-sidebar"><h2><a href="/help/">帮助中心</a></h2>{groups.map(g=><details open><summary>{g}</summary>{docs.filter(d=>d.group===g).map(d=><a href={`/help/${d.slug}/`} aria-current={current===`/help/${d.slug}/`?'page':undefined}>{d.title}</a>)}</details>)}</aside>
