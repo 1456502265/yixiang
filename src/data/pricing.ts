@@ -22,6 +22,17 @@ export const pointPlans = [
   ['ChatGPT', '150', '日常聊天最自然，像母语者说话'],
 ];
 
+// 首页沿用原官网的免费版 / 积分版 / 包月版，金额与详细价格页共用。
+const homeFeatures = [
+  '20+ 社交软件', '7 种翻译引擎',
+  ...monthlyFeatures.filter(feature => !['20+ 社交软件', '不限字符'].includes(feature)),
+];
+export const homePlans = [
+  { name: '免费版', price: '0', unit: '', description: '注册送 3万积分，可体验全部功能', features: homeFeatures, href: '/download/', action: '免费下载' },
+  { name: '积分版', price: pointPlans[0][1], unit: '/ 100 万字符', description: '用多少扣多少，不浪费', features: homeFeatures, href: '/contact/', action: '购买咨询' },
+  { name: '包月版', price: monthlyPlans[0].price, unit: '起 / 月', description: '每天不到 2 块钱，畅聊全球一整天', features: homeFeatures.map(feature => ['7 种翻译引擎', '账号多开'].includes(feature) ? `${feature}(因版本而异)` : feature).concat('不限字符'), href: '/contact/', action: '购买咨询' },
+];
+
 export const pricingFaqs = [
   ['怎么购买套餐？', '下载译想软件，注册登录后，在软件内的“账户中心 → 套餐购买”中直接扫码购买。如需帮助，可联系客服。'],
   ['积分套餐和包月套餐可以同时使用吗？', '可以同时拥有，但使用时系统会优先消耗包月套餐。积分套餐会保留，等包月套餐用完后自动使用。'],

@@ -158,7 +158,7 @@ CSP 按 [Google 官方指南](https://developers.google.com/tag-platform/securit
 
 - 修改功能、引擎、平台与使用场景：`src/data/product.ts`。
 - 修改帮助文档：`src/data/help.json`；保留 `slug` 可避免旧地址失效。
-- 套餐金额、各版引擎、7 行积分价格及退款等规则统一维护于 `src/data/pricing.ts`，沿用老站价格页；首页与价格方案页共用 `src/components/Pricing.astro`，展示基础版49元/月、专业版75元/月和高级版99元/月；积分套餐及常见问题位于 `src/pages/price.astro`。不要自行概括或改变套餐权益。
+- 套餐金额、各版引擎、7 行积分价格及退款等规则统一维护于 `src/data/pricing.ts`，沿用老站价格页；首页使用 `src/components/HomePricing.astro`，沿用原首页免费版 ¥0、积分版 ¥75/100万字符、包月版 ¥49起/月；价格方案页使用 `src/components/Pricing.astro`，展示基础版49元/月、专业版75元/月、高级版99元/月。两者的金额和权益数据统一维护于 `src/data/pricing.ts`；积分明细及常见问题位于 `src/pages/price.astro`。不要自行概括或改变套餐权益。
 - 图片保存在 `public/images/`，来源记录见 `docs/asset-sources.json`。本次没有使用同行图片或生成图片。
 - 软件协议正文保留原公开版本，并非本次重新认证的合同或数据事实。客户端权限、数据保存、第三方处理和退款规则应由运营方按真实产品核对。
 
