@@ -4,7 +4,7 @@ import { site } from '../config/site';
 <aside class="floating-contact" aria-label="在线客服">
   {site.channels.map(channel => (
     <details name="floating-contact-channel" class="contact-channel">
-      <summary aria-label={`${channel.name}，点击查看二维码和联系方式`}>
+      <summary id={`floating-contact-${channel.id}`} aria-label={`${channel.name}，点击查看二维码和联系方式`}>
         <img src={channel.icon} alt="" width="28" height="28" />
         <span class="channel-name">{channel.name}</span>
       </summary>
@@ -12,13 +12,13 @@ import { site } from '../config/site';
         <h2>{channel.name}</h2>
         <p>{channel.label}</p>
         <img class="contact-qr" src={channel.qr} alt={`${channel.name}客服二维码`} width="192" height="192" loading="lazy" />
-        <a class="contact-action" href={channel.href} target="_blank" rel="noopener noreferrer">
+        <a id={`floating-contact-${channel.id}-action`} class="contact-action" href={channel.href} target="_blank" rel="noopener noreferrer">
           {channel.name === '微信客服' ? '查看大图' : `打开 ${channel.name}`}<span aria-hidden="true"> ↗</span>
         </a>
       </div>
     </details>
   ))}
-  <a class="all-contacts" href="/contact/">联系我们<span aria-hidden="true"> ↗</span></a>
+  <a id="floating-contact-all" class="all-contacts" href="/contact/">联系我们<span aria-hidden="true"> ↗</span></a>
 </aside>
 
 <style>

@@ -8,9 +8,9 @@ export const site = {
   hours: '周一至周日 09:00–22:00（北京时间）',
   icp: '京ICP备2024090933号-4', police: '京公网安备11010902001265号',
   channels: [
-    { name: '微信客服', label: '使用微信扫一扫添加客服', href: '/images/kefuwx.jpg', qr: '/images/kefuwx.jpg', icon: '/images/WeChat.png' },
-    { name: 'WhatsApp', label: '+852 46649528', href: 'https://wa.me/85246649528', qr: '/images/CqWhatsAppQrImg.jpg', icon: '/images/whatsapp.png' },
-    { name: 'Telegram', label: '@transquickly_kefu', href: 'https://t.me/transquickly_kefu', qr: '/images/CqTelegramQrImg.jpg', icon: '/images/Telegram.png' },
+    { id: 'wechat', name: '微信客服', label: '使用微信扫一扫添加客服', href: '/images/kefuwx.jpg', qr: '/images/kefuwx.jpg', icon: '/images/WeChat.png' },
+    { id: 'whatsapp', name: 'WhatsApp', label: '+852 46649528', href: 'https://wa.me/85246649528', qr: '/images/CqWhatsAppQrImg.jpg', icon: '/images/whatsapp.png' },
+    { id: 'telegram', name: 'Telegram', label: '@transquickly_kefu', href: 'https://t.me/transquickly_kefu', qr: '/images/CqTelegramQrImg.jpg', icon: '/images/Telegram.png' },
   ],
 };
 export const navigation = [
