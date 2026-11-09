@@ -19,6 +19,11 @@ const internalChecks = [];
 const htmlMap = new Map();
 const report = (file, message) => errors.push(`${relative(root, file)}: ${message}`);
 const routeOf = file => '/' + relative(root, file).split(sep).join('/').replace(/index\.html$/, '');
+const tagManagerSrc = 'https://www.googletagmanager.com/gtm.js?id=GTM-MP9WBHRK';
+const tagManagerInit = `window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});`;
 for (const file of files) htmlMap.set(file, await readFile(file, 'utf8'));
 
 for (const [file, html] of htmlMap) {
@@ -31,7 +36,9 @@ for (const [file, html] of htmlMap) {
   if ((html.match(/<h1\b/g)||[]).length !== 1) report(file, 'expected exactly one h1');
   if (!html.includes('lang="zh-CN"')) report(file, 'missing Chinese language');
   if (!html.includes(`<link rel="canonical" href="${origin}${route}"`)) report(file, 'incorrect canonical');
-  if (/\?{3,}|example\.com|vpn\.cyscar|javascript:|wp-includes|wp-content|googletagmanager|hm\.baidu|仍要运行|银行级/.test(html)) report(file, 'placeholder, inherited script or unsafe instruction');
+  if (/\?{3,}|example\.com|vpn\.cyscar|javascript:|wp-includes|wp-content|hm\.baidu|仍要运行|银行级/.test(html)) report(file, 'placeholder, inherited script or unsafe instruction');
+  if (html.split(`src="${tagManagerSrc}"`).length !== 2) report(file, 'expected exactly one configured GTM loader');
+  if (html.split('id="google-tag-manager-init"').length !== 2) report(file, 'expected exactly one GTM initializer');
   const noindex = html.includes('noindex, follow');
   if (!noindex && !sitemap.includes(`<loc>${origin}${route}</loc>`)) report(file, 'missing from sitemap');
   if (noindex && sitemap.includes(`<loc>${origin}${route}</loc>`)) report(file, 'noindex page included in sitemap');
@@ -40,14 +47,18 @@ for (const [file, html] of htmlMap) {
   for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const src = /\bsrc="([^"]+)"/.exec(match[1])?.[1];
     if (src) {
-      const allowed = ['/scripts/help-search.js'];
+      const allowed = ['/scripts/help-search.js', tagManagerSrc];
       if (!allowed.includes(src)) report(file, `unexpected executable script ${src}`);
+      if (src === tagManagerSrc && !/\basync\b/.test(match[1])) report(file, 'GTM loader must be async');
     } else {
-      if (!match[1].includes('application/ld+json')) report(file, 'unexpected executable inline script');
-      try { const data=JSON.parse(match[2]); if (!data['@graph']?.length) report(file, 'missing schema graph'); } catch { report(file, 'invalid JSON-LD'); }
+      if (match[1].includes('application/ld+json')) {
+        try { const data=JSON.parse(match[2]); if (!data['@graph']?.length) report(file, 'missing schema graph'); } catch { report(file, 'invalid JSON-LD'); }
+      } else if (!match[1].includes('id="google-tag-manager-init"') || match[2].trim() !== tagManagerInit) {
+        report(file, 'unexpected executable inline script');
+      }
       const hash = createHash('sha256').update(match[2]).digest('base64');
       const block = headers.split('\n\n').find(block=>block.startsWith(route+'\n'));
-      if (!block?.includes(`'sha256-${hash}'`)) report(file, 'JSON-LD CSP hash missing');
+      if (!block?.includes(`'sha256-${hash}'`)) report(file, 'inline script CSP hash missing');
     }
   }
   for (const match of html.matchAll(/\b(?:href|src)="([^"]*)"/g)) {

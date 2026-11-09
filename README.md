@@ -138,6 +138,12 @@ docs/
 
 遇到 Windows、macOS 或安全软件警告，应暂停安装并核实，不引导用户关闭保护或绕过警告。签名也不等于文件绝对安全。系统列表和配置要求沿用老站：Windows版支持 Windows 8 / 10 / 11，另有 Windows 7版；MacOS-M版适用 M1 / M2 / M3，MacOS-Intel版适用 Intel 芯片，两者要求 MacOS 11 及以上。Windows 要求 4GB 内存、2GB 硬盘，Mac 要求 2GB 硬盘。下载开放状态由 `enabled` 单独控制。
 
+## Google 转化标签
+
+全站布局 `src/layouts/SiteLayout.astro` 已接入 Google Tag Manager 容器 `GTM-MP9WBHRK`，在异步加载前初始化 `dataLayer`、`gtag` 和 GTM 启动事件。具体 Google Ads 转化标签、转化 ID / Label 与触发条件需要在该 GTM 容器后台配置并发布；接入容器本身不代表转化事件已配置或验证成功。
+
+CSP 按 [Google 官方指南](https://developers.google.com/tag-platform/security/guides/csp) 放行 GTM 和 Google Ads 所需来源，初始化脚本使用构建生成的精确哈希。若容器后续添加 GA4、自定义 HTML 或其他第三方标签，应按实际请求补充 CSP 并验证。部署后使用 Tag Assistant 确认容器加载和实际转化触发。
+
 ## 原站视频
 
 首页使用 HTML 原生 `<video controls playsinline preload="none">` 播放四段原站视频，支持浏览器自带的播放、暂停、进度、音量与全屏操作。MP4 地址、原视频 ID 和本地封面在 `src/config/videos.ts` 集中维护；组件为 `src/components/ProductVideo.astro`。
@@ -166,9 +172,9 @@ docs/
 - 站点地图：`/sitemap-index.xml` 与 `/sitemap-0.xml`。
 - 图片：首屏主图优先加载，后续图片延迟加载，提供替代文本和尺寸。
 - 404：真实 404，不使用 SPA 全站回退，不加入 sitemap。
-- 无 WordPress 主题、jQuery、广告统计、嵌入客服或自动下载脚本。原站的 4 段视频已恢复，使用浏览器原生 video 播放 HTTPS MP4 文件。
+- 无 WordPress 主题、jQuery、嵌入客服或自动下载脚本；已按要求接入 Google Tag Manager 转化容器。原站的 4 段视频已恢复，使用浏览器原生 video 播放 HTTPS MP4 文件。
 - `_headers` 设置 CSP、防嗅探、防嵌入、来源策略及权限策略。
-- JSON-LD 的哈希由构建脚本按实际产物生成；页面仅允许本站脚本；视频媒体来源单独允许原视频 CDN，不加载第三方播放器脚本。
+- JSON-LD 和 GTM 初始化脚本的哈希由构建脚本按实际产物生成；页面允许本站及已配置的 Google 标签脚本来源；视频媒体来源单独允许原视频 CDN，不加载第三方播放器脚本。
 - `/_astro/` 带内容哈希的资源设置长期缓存。其余图片与 HTML 不设置不可变缓存。
 
 更换正式域名时，只需修改 `src/config/domain.mjs` 中的 `siteUrl`，再重新构建。Astro、canonical、分享链接、结构化数据、站点地图、robots.txt 和构建检查自动使用新地址。新域名尚未提供时，该配置暂时保留原值；页面文案不再写死旧官网域名。原安装包仍使用 `dl.yixiang.chat`，客服邮箱仍为 `service@yixiang.chat`，需要更换时分别修改下载配置和联系方式配置。

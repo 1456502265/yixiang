@@ -15,6 +15,13 @@ const schema = { '@context':'https://schema.org', '@graph':[
 ---
 <!doctype html><html lang="zh-CN"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<script is:inline id="google-tag-manager-init">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+</script>
+<script is:inline async src="https://www.googletagmanager.com/gtm.js?id=GTM-MP9WBHRK"></script>
 <title>{title} | 译想</title><meta name="description" content={description}/><link rel="canonical" href={canonical}/>
 <meta name="robots" content={noindex?'noindex, follow':'index, follow, max-image-preview:large'}/>
 <meta name="theme-color" content="#017fe4"/><link rel="icon" type="image/png" href="/images/logo_bluedi2.png"/><link rel="sitemap" href="/sitemap-index.xml"/>
