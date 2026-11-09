@@ -142,13 +142,13 @@ docs/
 
 全站布局 `src/layouts/SiteLayout.astro` 已接入 Google Tag Manager 容器 `GTM-MP9WBHRK`，在异步加载前初始化 `dataLayer`、`gtag` 和 GTM 启动事件。具体 Google Ads 转化标签、转化 ID / Label 与触发条件需要在该 GTM 容器后台配置并发布；接入容器本身不代表转化事件已配置或验证成功。
 
-CSP 不再限制脚本、图片和样式，也不再为内联脚本生成哈希或 nonce。统计回传仍受 `connect-src` 规则约束，GTM 容器新增其他标签时需按实际请求验证。
+已完全移除 CSP 响应头，不再按 CSP 限制脚本、图片、样式或统计回传。部署后使用 Tag Assistant 验证 GTM 和实际转化触发。
 
 ## 原站视频
 
 首页使用 HTML 原生 `<video controls playsinline preload="none">` 播放四段原站视频，支持浏览器自带的播放、暂停、进度、音量与全屏操作。MP4 地址、原视频 ID 和本地封面在 `src/config/videos.ts` 集中维护；组件为 `src/components/ProductVideo.astro`。
 
-视频使用原站保利威 CDN 公开提供的 HTTPS MP4 文件，本次逐条检查均返回 200、类型为 `video/mp4`。封面保存在 `public/images/video-*.jpg`。不再加载保利威播放器脚本，不使用 iframe 或中间播放页，不自动播放；点击播放前不预加载视频文件。响应头只为视频文件开放 `https://dpv.videocc.net` 的媒体请求。
+视频使用原站保利威 CDN 公开提供的 HTTPS MP4 文件，本次逐条检查均返回 200、类型为 `video/mp4`。封面保存在 `public/images/video-*.jpg`。不再加载保利威播放器脚本，不使用 iframe 或中间播放页，不自动播放；点击播放前不预加载视频文件。视频文件由 `https://dpv.videocc.net` 提供。
 
 本次未完成真实浏览器播放、拖动进度及全屏验收。若后续视频 CDN 配置变化，请更新真实文件地址，不要使用临时签名地址或推测链接。
 
@@ -173,17 +173,17 @@ CSP 不再限制脚本、图片和样式，也不再为内联脚本生成哈希�
 - 图片：首屏主图优先加载，后续图片延迟加载，提供替代文本和尺寸。
 - 404：真实 404，不使用 SPA 全站回退，不加入 sitemap。
 - 无 WordPress 主题、jQuery、嵌入客服或自动下载脚本；已按要求接入 Google Tag Manager 转化容器。原站的 4 段视频已恢复，使用浏览器原生 video 播放 HTTPS MP4 文件。
-- `_headers` 设置 CSP、防嗅探、防嵌入、来源策略及权限策略。
-- 脚本、图片和样式不设 CSP 限制；保留字体、连接、框架、媒体等其他 CSP 指令及通用安全响应头。
+- `_headers` 设置防嗅探、防嵌入、来源策略及权限策略，不下发 CSP。
+- 不下发 CSP，不限制脚本、图片、样式、字体、连接、框架和媒体的来源。
 - `/_astro/` 带内容哈希的资源设置长期缓存。其余图片与 HTML 不设置不可变缓存。
 
 更换正式域名时，只需修改 `src/config/domain.mjs` 中的 `siteUrl`，再重新构建。Astro、canonical、分享链接、结构化数据、站点地图、robots.txt 和构建检查自动使用新地址。新域名尚未提供时，该配置暂时保留原值；页面文案不再写死旧官网域名。原安装包仍使用 `dl.yixiang.chat`，客服邮箱仍为 `service@yixiang.chat`，需要更换时分别修改下载配置和联系方式配置。
 
 ## CSP 与统计脚本
 
-按当前要求，已移除 `script-src`、`img-src`、`style-src` 及其 `default-src` 回退限制；不再生成脚本哈希或注入 nonce，也不需要额外的 HTML Worker。`npm run deploy` 直接发布 `dist/`。
+已完全移除 `Content-Security-Policy` 响应头，包括 `connect-src` 等所有 CSP 指令。不生成脚本哈希、不注入 nonce，也不需要额外的 HTML Worker。`npm run deploy` 直接发布 `dist/`。
 
-字体、网络请求、iframe、媒体以及防嵌入等规则仍由 `public/_headers` 控制。GTM 和统计脚本发出的请求仍需符合 `connect-src`。
+`public/_headers` 仅保留其他通用响应头和静态资源缓存规则。
 
 本地验证实际响应（另开终端运行第二条命令）：
 
@@ -192,7 +192,7 @@ npx wrangler dev --local --port 8787
 npm run verify:csp
 ```
 
-检查覆盖脚本、图片、样式限制及默认回退已移除，其他安全响应头仍在，404、重定向和静态资源缓存正常。验收生产响应头请使用 Wrangler，本地 Astro 开发服务器不代表最终托管响应。
+检查确认 CSP 响应头不存在，其他通用响应头仍在，404、重定向和静态资源缓存正常。验收生产响应头请使用 Wrangler，本地 Astro 开发服务器不代表最终托管响应。
 
 ## 部署到 Cloudflare
 
