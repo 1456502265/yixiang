@@ -1,6 +1,5 @@
 import { readFile, access } from 'node:fs/promises';
 import { resolve, relative, sep } from 'node:path';
-import { createHash } from 'node:crypto';
 import { walk } from './lib/files.mjs';
 import { siteUrl } from '../src/config/domain.mjs';
 
@@ -56,9 +55,6 @@ for (const [file, html] of htmlMap) {
       } else if (!match[1].includes('id="google-tag-manager-init"') || match[2].trim() !== tagManagerInit) {
         report(file, 'unexpected executable inline script');
       }
-      const hash = createHash('sha256').update(match[2]).digest('base64');
-      const block = headers.split('\n\n').find(block=>block.startsWith(route+'\n'));
-      if (!block?.includes(`'sha256-${hash}'`)) report(file, 'inline script CSP hash missing');
     }
   }
   for (const match of html.matchAll(/\b(?:href|src)="([^"]*)"/g)) {
@@ -89,4 +85,4 @@ const redirects = await readFile(resolve(root, '_redirects'), 'utf8');
 if (!redirects.includes('/price1/ /price/ 301')) errors.push('Missing old price URL redirect');
 if (headers.split('\n').some(line => line.length > 2000)) errors.push('Cloudflare header line exceeds 2000 characters');
 if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1; }
-else console.log(`Verified ${files.length} pages: titles, descriptions, canonical URLs, sitemap, JSON-LD/CSP, local links/assets, anchors, image attributes and ${docs.length} retained help routes.`);
+else console.log(`Verified ${files.length} pages: titles, descriptions, canonical URLs, sitemap, JSON-LD, local links/assets, anchors, image attributes and ${docs.length} retained help routes.`);

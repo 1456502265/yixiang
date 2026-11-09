@@ -15,7 +15,7 @@
 | 部署 | Cloudflare Workers Static Assets，Wrangler 4.158.0 |
 | 运行环境 | Node.js >= 22.23.4；本次使用 Node.js 24.13.0 |
 
-原脚手架使用 Astro 5、Cloudflare SSR 适配器、MDX 和 RSS。新版官网不需要服务器渲染、博客示例和数据库，因此移除了这些依赖及对应示例文件，保留 Astro + TypeScript + Cloudflare 路线。升级依赖并删除未使用的适配器，减少构建和部署依赖。当前没有在线后台管理、登录、支付或表单提交功能。
+原脚手架使用 Astro 5、Cloudflare SSR 适配器、MDX 和 RSS。新版官网不需要服务器渲染、博客示例和数据库，因此移除了这些依赖及对应示例文件，保留 Astro + TypeScript + Cloudflare 路线。升级依赖并删除未使用的适配器，减少构建和部署依赖。当前没有在线后台管理、登录、支付或表单提交功能。页面内容由 Astro 静态生成，直接通过 Cloudflare Static Assets 发布。
 
 已清理 Astro 默认 favicon、Atkinson 示例字体、未引用的重复图片、旧博客空目录和未使用样式；Cloudflare 配置已移除静态站不需要的 Node 兼容标记。TypeScript 保留为开发检查依赖。
 
@@ -37,7 +37,7 @@ npm run check
 | 命令 | 用途 |
 | --- | --- |
 | `npm run dev` | 启动开发服务器 |
-| `npm run build` | 构建到 `dist/`，并生成各页面的 CSP 哈希 |
+| `npm run build` | 构建到 `dist/`，同步配置的响应头 |
 | `npm run preview` | 预览已经构建的产物 |
 | `npm run verify` | 检查已有 `dist/` 的页面、SEO、链接与资源 |
 | `npm run check` | 类型检查、构建、站点检查和部署预检 |
@@ -76,7 +76,7 @@ public/
   _redirects                    # 旧价格地址永久重定向
 scripts/
   clean-build.mjs               # 构建前校验并清理本项目 dist
-  finalize-build.mjs            # 按生成页面计算 JSON-LD 的 CSP 哈希
+  finalize-build.mjs            # 同步 public/_headers 到构建产物
   verify-site.mjs               # 静态构建产物检查
   lib/files.mjs                 # 文件遍历工具
   # HTTP 响应检查说明见下方验证记录
@@ -142,7 +142,7 @@ docs/
 
 全站布局 `src/layouts/SiteLayout.astro` 已接入 Google Tag Manager 容器 `GTM-MP9WBHRK`，在异步加载前初始化 `dataLayer`、`gtag` 和 GTM 启动事件。具体 Google Ads 转化标签、转化 ID / Label 与触发条件需要在该 GTM 容器后台配置并发布；接入容器本身不代表转化事件已配置或验证成功。
 
-CSP 按 [Google 官方指南](https://developers.google.com/tag-platform/security/guides/csp) 放行 GTM 和 Google Ads 所需来源，初始化脚本使用构建生成的精确哈希。若容器后续添加 GA4、自定义 HTML 或其他第三方标签，应按实际请求补充 CSP 并验证。部署后使用 Tag Assistant 确认容器加载和实际转化触发。
+CSP 不再限制脚本、图片和样式，也不再为内联脚本生成哈希或 nonce。统计回传仍受 `connect-src` 规则约束，GTM 容器新增其他标签时需按实际请求验证。
 
 ## 原站视频
 
@@ -174,10 +174,25 @@ CSP 按 [Google 官方指南](https://developers.google.com/tag-platform/securit
 - 404：真实 404，不使用 SPA 全站回退，不加入 sitemap。
 - 无 WordPress 主题、jQuery、嵌入客服或自动下载脚本；已按要求接入 Google Tag Manager 转化容器。原站的 4 段视频已恢复，使用浏览器原生 video 播放 HTTPS MP4 文件。
 - `_headers` 设置 CSP、防嗅探、防嵌入、来源策略及权限策略。
-- JSON-LD 和 GTM 初始化脚本的哈希由构建脚本按实际产物生成；页面允许本站及已配置的 Google 标签脚本来源；视频媒体来源单独允许原视频 CDN，不加载第三方播放器脚本。
+- 脚本、图片和样式不设 CSP 限制；保留字体、连接、框架、媒体等其他 CSP 指令及通用安全响应头。
 - `/_astro/` 带内容哈希的资源设置长期缓存。其余图片与 HTML 不设置不可变缓存。
 
 更换正式域名时，只需修改 `src/config/domain.mjs` 中的 `siteUrl`，再重新构建。Astro、canonical、分享链接、结构化数据、站点地图、robots.txt 和构建检查自动使用新地址。新域名尚未提供时，该配置暂时保留原值；页面文案不再写死旧官网域名。原安装包仍使用 `dl.yixiang.chat`，客服邮箱仍为 `service@yixiang.chat`，需要更换时分别修改下载配置和联系方式配置。
+
+## CSP 与统计脚本
+
+按当前要求，已移除 `script-src`、`img-src`、`style-src` 及其 `default-src` 回退限制；不再生成脚本哈希或注入 nonce，也不需要额外的 HTML Worker。`npm run deploy` 直接发布 `dist/`。
+
+字体、网络请求、iframe、媒体以及防嵌入等规则仍由 `public/_headers` 控制。GTM 和统计脚本发出的请求仍需符合 `connect-src`。
+
+本地验证实际响应（另开终端运行第二条命令）：
+
+```bash
+npx wrangler dev --local --port 8787
+npm run verify:csp
+```
+
+检查覆盖脚本、图片、样式限制及默认回退已移除，其他安全响应头仍在，404、重定向和静态资源缓存正常。验收生产响应头请使用 Wrangler，本地 Astro 开发服务器不代表最终托管响应。
 
 ## 部署到 Cloudflare
 
@@ -199,7 +214,7 @@ npm run deploy
 
 - Astro 类型检查：0 错误、0 警告、0 提示。
 - 生产构建：45 页成功生成。
-- 自动站点检查：独立标题和描述、唯一 H1、canonical、sitemap、JSON-LD 与 CSP 哈希、站内链接和锚点、本地资源、图片属性、34 个保留帮助路由通过。
+- 自动站点检查：独立标题和描述、唯一 H1、canonical、sitemap、JSON-LD 与响应头、站内链接和锚点、本地资源、图片属性、34 个保留帮助路由通过。
 - Cloudflare 预检：`wrangler deploy --dry-run` 成功，未发布。
 - 本地 Wrangler HTTP：首页、帮助页和下载页返回 200；旧价格地址返回 301；不存在页面返回 404；安全响应头及本站搜索脚本响应正常。
 - 依赖审计：更新后的依赖审计为 0 个已知漏洞。该结果与查询时间有关，不是恶意软件扫描或安全认证。

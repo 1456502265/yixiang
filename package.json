@@ -22,7 +22,8 @@
     "verify": "node scripts/verify-site.mjs",
     "deploy": "wrangler deploy",
     "astro": "astro",
-    "prebuild": "node scripts/clean-build.mjs"
+    "prebuild": "node scripts/clean-build.mjs",
+    "verify:csp": "node scripts/verify-csp.mjs"
   },
   "type": "module"
 }
