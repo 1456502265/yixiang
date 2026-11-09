@@ -125,16 +125,16 @@ docs/
 
 ## 下载管理
 
-`src/config/downloads.ts` 中四个版本已按用户要求开放下载，沿用原官网地址：
+`src/config/downloads.ts` 中四个版本使用 Google 网盘分享链接：
 
-| 版本 | 原官网下载地址 |
+| 版本 | Google 网盘地址 |
 | --- | --- |
-| Windows版 | `https://dl.yixiang.chat/download/YiXiang-win-x64.exe` |
-| Windows 7版 | `https://dl.yixiang.chat/download/YiXiang-win7-x64.exe` |
-| MacOS-M版 | `https://dl.yixiang.chat/download/YiXiang-mac-arm64.dmg` |
-| MacOS-Intel版 | `https://dl.yixiang.chat/download/YiXiang-mac-x64.dmg` |
+| Windows版 | `https://drive.google.com/file/d/1CKeCDMz7wg5wxWGeUV5f3XgfV8tsVlKR/view?usp=sharing` |
+| Windows 7版 | `https://drive.google.com/file/d/129ODI5nCNppmebC0AzJWEhulfAbQE5l0/view?usp=sharing` |
+| MacOS-M版 | `https://drive.google.com/file/d/1vkXs7PKEXGcFsj8nPVBlck_joxYQHCk7/view?usp=sharing` |
+| MacOS-Intel版 | `https://drive.google.com/file/d/1R0qDDbdhmRAUoSQgl9bNZeO6qQYpe3Go/view?usp=sharing` |
 
-`enabled` 控制是否开放该版本；`url` 是实际下载链接。四个地址本次 HEAD 检查均返回 200，未下载或运行安装包，不代表已完成软件安全扫描。地址校验保留官方 HTTPS 域名限制，不因未填写可选的版本、发布日期、发布者和 SHA-256 信息而阻止下载；可选信息只在有真实数据时填写并显示，不要编造。
+`enabled` 控制是否开放该版本；`url` 是实际下载链接。按钮会在新标签页打开网盘页面，用户需要在网盘中点击下载，并具备访问 Google 网盘的网络条件。分享权限需设为“知道链接的任何人”可查看，发布前用未登录账号的无痕窗口逐一确认可下载；当前未核实分享权限，也未下载或运行安装包。地址校验仅允许本站和 `drive.google.com` 的 HTTPS 链接，不因未填写可选的版本、发布日期、发布者和 SHA-256 信息而阻止下载；可选信息只在有真实数据时填写并显示，不要编造。
 
 遇到 Windows、macOS 或安全软件警告，应暂停安装并核实，不引导用户关闭保护或绕过警告。签名也不等于文件绝对安全。系统列表和配置要求沿用老站：Windows版支持 Windows 8 / 10 / 11，另有 Windows 7版；MacOS-M版适用 M1 / M2 / M3，MacOS-Intel版适用 Intel 芯片，两者要求 MacOS 11 及以上。Windows 要求 4GB 内存、2GB 硬盘，Mac 要求 2GB 硬盘。下载开放状态由 `enabled` 单独控制。
 
@@ -177,7 +177,7 @@ docs/
 - 不下发 CSP，不限制脚本、图片、样式、字体、连接、框架和媒体的来源。
 - `/_astro/` 带内容哈希的资源设置长期缓存。其余图片与 HTML 不设置不可变缓存。
 
-更换正式域名时，只需修改 `src/config/domain.mjs` 中的 `siteUrl`，再重新构建。Astro、canonical、分享链接、结构化数据、站点地图、robots.txt 和构建检查自动使用新地址。新域名尚未提供时，该配置暂时保留原值；页面文案不再写死旧官网域名。原安装包仍使用 `dl.yixiang.chat`，客服邮箱仍为 `service@yixiang.chat`，需要更换时分别修改下载配置和联系方式配置。
+更换正式域名时，只需修改 `src/config/domain.mjs` 中的 `siteUrl`，再重新构建。Astro、canonical、分享链接、结构化数据、站点地图、robots.txt 和构建检查自动使用新地址。新域名尚未提供时，该配置暂时保留原值；页面文案不再写死旧官网域名。安装包目前使用 Google 网盘，客服邮箱仍为 `service@yixiang.chat`，需要更换时分别修改下载配置和联系方式配置。
 
 ## CSP 与统计脚本
 
