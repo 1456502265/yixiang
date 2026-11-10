@@ -1,11 +1,21 @@
 ---
 import Layout from '../../layouts/SiteLayout.astro';
-import HelpSidebar from '../../components/HelpSidebar.astro';
-import docs from '../../data/help.json';
-const groups = [...new Set(docs.map(d=>d.group))];
+import { downloads, isDownloadReady } from '../../config/downloads';
+import { site } from '../../config/site';
+import { pricingFaqs } from '../../data/pricing';
+import SystemIcon from '../../components/SystemIcon.astro';
+const questions = [
+  ['怎么开始使用？','下载对应系统版本，使用邮箱注册账户。打开社交应用，登录自己的或已授权的账号，再选择语言和翻译引擎。'],
+  ['支持哪些平台和语言？','支持 WhatsApp、Telegram、Line 等社交软件和 200 多种语言。实际平台及语言范围以客户端和所选引擎为准，当前只提供电脑客户端。'],
+  ['如何设置翻译？','在窗口翻译设置中选择“我的语言”和“对方语言”。联系人可单独设置；重要内容请核对译文再发送。'],
+  ['安装出现安全警告怎么办？','暂停安装，保留提示、文件名和版本，通过官方客服核实。不要关闭安全软件或绕过系统保护。'],
+];
 ---
-<Layout title="帮助中心：安装、聊天翻译与账户指南" description="在译想帮助中心查找安装注册、聊天翻译、引擎选择、快捷回复、套餐订单与系统设置指南，所有文档均可在本站直接阅读。">
-<section class="container page-hero"><p class="eyebrow">帮助中心 / HELP CENTER</p><h1>译想<span>帮助中心。</span></h1><p>使用文档、常见问题和故障排查。</p><label class="sr-only" for="help-query">搜索帮助文档</label><input type="search" id="help-query" class="help-search" placeholder="搜索帮助，例如：注册、翻译设置、套餐" autocomplete="off" aria-controls="help-results"/><p class="fine" id="result-count" role="status" aria-live="polite">共 {docs.length} 篇使用指南</p></section>
-<div class="container help-layout"><HelpSidebar/><div id="help-results">{groups.map(g=><section class="help-group" data-help-group><h2>{g}</h2><div class="help-links">{docs.filter(d=>d.group===g).map(d=><a href={`/help/${d.slug}/`} data-help-item data-search={`${d.title} ${d.description} ${d.group}`}><strong>{d.title}</strong><span aria-hidden="true">↗</span></a>)}</div></section>)}<p id="help-empty" class="empty-state" hidden>没有匹配的文档。试试其他关键词，或 <a class="text-link" href="/contact/">联系官方客服 →</a></p><p class="fine">菜单名称和可用功能以当前版本为准。</p></div></div>
-<script is:inline src="/scripts/help-search.js" defer></script>
+<Layout title="帮助中心" description="查看译想的客户端下载、系统要求、常见问题、计费规则及官方联系方式。支持 Windows 和 macOS。">
+  <section class="page-heading"><div class="container"><h1>帮助中心</h1><p>软件下载、使用说明和官方客服。</p></div></section>
+  <nav class="container help-shortcuts" aria-label="帮助分类"><a href="#download">软件下载</a><a href="#faq">常见问题</a><a href="#billing">购买与计费</a><a href="#contact">联系我们</a></nav>
+  <section class="section compact container" id="download"><div class="section-heading left"><h2>软件下载</h2><p>根据系统选择版本，按钮将在新标签页打开 Google Drive。无法打开时请联系客服。</p></div><div class="download-grid">{downloads.map(download => <article class="download-card"><SystemIcon system={download.id.startsWith('windows')?'windows':'apple'}/><h3>{download.name}</h3><p>{download.system}</p><p class="fine">{download.requirements}</p>{isDownloadReady(download)?<a id={`download-${download.id}`} class="button" href={download.url} target="_blank" rel="noopener noreferrer">下载</a>:<a class="button secondary" href="#contact">联系客服</a>}</article>)}</div><p class="fine pricing-note">注册、安装与试用免费。翻译服务在试用额度用完后按套餐收费。安装前请阅读<a href="/user-service-agreement/">用户协议与隐私政策</a>。</p></section>
+  <section class="section tinted" id="faq"><div class="container faq-container"><div class="section-heading left"><h2>常见问题</h2></div>{questions.map(([question,answer],index) => <details class="faq-item" open={index===0}><summary>{question}</summary><p>{answer}</p></details>)}</div></section>
+  <section class="section container faq-container" id="billing"><div class="section-heading left"><h2>购买与计费</h2></div>{pricingFaqs.map(([question,answer]) => <details class="faq-item"><summary>{question}</summary><p>{answer}</p></details>)}<details class="faq-item"><summary>积分怎么计算？</summary><p>按原文计算：英文字母 1 字符，中文汉字 2 字符。百度、有道、火山每字符 1 积分；谷歌、DeepL、DeepSeek 为 1.5 积分；ChatGPT 为 2 积分。语音转文字每分钟扣 200 积分，后续文本翻译另计。</p></details></section>
+  <section class="section container" id="contact"><div class="section-heading left"><h2>联系我们</h2><p>{site.hours}</p></div><div class="contact-grid">{site.channels.map(channel => <article><img src={channel.qr} alt={`${channel.name}客服二维码`} width="160" height="160" loading="lazy"/><h3>{channel.name}</h3><p>{channel.label}</p><a class="text-link" href={channel.href} target="_blank" rel="noopener noreferrer">{channel.name==='微信客服'?'查看大图':'打开客服'} ↗</a></article>)}</div><div class="company-info"><p>{site.company}</p><p><a href={site.phoneHref}>{site.phone}</a> · <a href={`mailto:${site.email}`}>{site.email}</a></p><p>{site.address}</p></div></section>
 </Layout>

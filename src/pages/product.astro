@@ -1,13 +1,5 @@
+﻿---
+import FeatureLayout from '../layouts/FeatureLayout.astro';
+import { featurePages } from '../data/features';
 ---
-import Layout from '../layouts/SiteLayout.astro';
-import Features from '../components/Features.astro';
-import Platforms from '../components/Platforms.astro';
-import { engines } from '../data/product';
----
-<Layout title="产品介绍：聊天、语音翻译与多引擎选择" description="了解译想的实时聊天翻译、语音翻译、快捷回复、未读提醒与多账号管理功能，以及翻译引擎和社交平台支持说明。">
-<section class="container page-hero split"><div><p class="eyebrow">产品介绍 / PRODUCT</p><h1>边聊边译，<br/><span>不离开聊天窗口。</span></h1><p>在 20+ 社交软件中，收到外语消息自动翻译，用中文回复自动发送。支持 200 多种语言。客户说什么语言，译想翻译成中文；你用中文回复，译想翻译成客户的语言。</p><a href="/download/" class="button">软件下载 ↗</a></div><img src="/images/chatefect_alby.png" alt="译想阿拉伯语对话与中文翻译界面示例" width="906" height="525" fetchpriority="high"/></section>
-<section class="section soft"><div class="container"><div class="section-heading"><p class="eyebrow">产品功能</p><h2>翻译、快捷回复、未读提醒，一站式搞定。</h2></div><Features/></div></section>
-<section class="section container"><div class="section-heading"><p class="eyebrow">多引擎翻译</p><h2>7 种翻译引擎，按场景选择。</h2><p>ChatGPT、DeepSeek、DeepL、谷歌、百度、有道、火山，可用范围以套餐为准。</p></div><div class="engine-row">{engines.map(([n,img])=><div><img src={`/images/${img}`} alt="" width="44" height="44" loading="lazy"/><span>{n}</span></div>)}</div><div class="table-wrap"><table><thead><tr><th>使用场景</th><th>可选引擎</th><th>注意事项</th></tr></thead><tbody><tr><td>商务报价与专业内容</td><td>DeepL</td><td>核对金额、单位、交期与合同条款</td></tr><tr><td>日常聊天与社交沟通</td><td>ChatGPT / DeepSeek</td><td>确认语气和原意一致</td></tr><tr><td>中文互译</td><td>百度 / 有道 / 火山</td><td>结合目标语言选择合适表达</td></tr><tr><td>多语言与小语种</td><td>谷歌 / DeepL</td><td>对照原文，必要时寻求人工协助</td></tr></tbody></table></div><p class="fine">重要合同、报价和专业内容，请人工核对译文。</p></section>
-<section class="section soft"><div class="container"><div class="section-heading center"><h2>你在哪里聊，译想就支持哪里。</h2><p>平台适配可能随第三方更新而变化，购买前请确认当前支持状态。</p></div><Platforms/></div></section>
-<section class="section container"><div class="section-heading"><h2>边聊边译，三步搞定。</h2></div><div class="steps"><div><span>01</span><h3>添加应用</h3><p>选择社交软件，登录自己的或已授权的账号。</p></div><div><span>02</span><h3>设置翻译</h3><p>选择翻译语言和引擎。</p></div><div><span>03</span><h3>开始沟通</h3><p>收到消息自动翻译，用中文回复。</p></div></div><a class="text-link" href="/help/liaotianfanyi/">阅读聊天翻译指南 →</a></section>
-</Layout>
+<FeatureLayout feature={featurePages[0]} />

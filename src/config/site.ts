@@ -14,7 +14,5 @@ export const site = {
   ],
 };
 export const navigation = [
-  ['/', '首页'], ['/tuanduifangan/', '团队方案'], ['/product/', '产品介绍'],
-  ['/price/', '价格方案'], ['/download/', '软件下载'], ['/help/', '帮助中心'],
-  ['/about/', '关于我们'], ['/contact/', '联系我们'],
+  ['/', '首页'], ['/product/', '软件功能'], ['/price/', '价格方案'], ['/help/', '帮助中心'],
 ];

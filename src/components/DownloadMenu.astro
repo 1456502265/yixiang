@@ -1,0 +1,10 @@
+---
+import { downloads, isDownloadReady } from '../config/downloads';
+---
+<details class="download-menu">
+  <summary class="button">软件下载 <span aria-hidden="true">↓</span></summary>
+  <div class="download-options">
+    {downloads.filter(isDownloadReady).map(download => <a href={download.url} target="_blank" rel="noopener noreferrer"><strong>{download.name}</strong><small>{download.system}</small></a>)}
+    <a class="download-help" href="/help/#download">查看系统要求 →</a>
+  </div>
+</details>

@@ -1,0 +1,19 @@
+---
+import Layout from './SiteLayout.astro';
+import { featurePages } from '../data/features';
+interface Props { feature: typeof featurePages[number]; }
+const { feature } = Astro.props;
+---
+<Layout title={feature.title} description={`${feature.summary}${feature.points[0]}`}>
+  <div class="container breadcrumb"><a href="/">首页</a><span>/</span><span>软件功能</span><span>/</span><span>{feature.title}</span></div>
+  <div class="container feature-layout">
+    <aside class="feature-sidebar" aria-label="软件功能目录">
+      <h2>软件功能</h2>
+      {featurePages.map(item => <a href={item.href} aria-current={item.href === feature.href ? 'page' : undefined}>{item.title}<span aria-hidden="true">›</span></a>)}
+    </aside>
+    <article class="feature-detail">
+      <div class="feature-picture"><img src={`/images/${feature.image}`} alt={feature.alt} width={feature.width} height={feature.height} fetchpriority="high" /></div>
+      <div class="feature-copy"><p class="eyebrow">软件功能</p><h1>{feature.title}</h1><p class="feature-summary">{feature.summary}</p><ol>{feature.points.map(point => <li>{point}</li>)}</ol><a class="button" href="/help/#download">下载体验 <span aria-hidden="true">↓</span></a></div>
+    </article>
+  </div>
+</Layout>

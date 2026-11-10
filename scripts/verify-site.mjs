@@ -13,7 +13,7 @@ const headers = await readFile(resolve(root, '_headers'), 'utf8');
 const sitemap = await readFile(resolve(root, 'sitemap-0.xml'), 'utf8');
 const robots = await readFile(resolve(root, 'robots.txt'), 'utf8');
 if (!robots.includes(`Sitemap: ${origin}/sitemap-index.xml`)) errors.push('robots.txt sitemap does not match configured site domain');
-const docs = JSON.parse(await readFile('src/data/help.json', 'utf8'));
+const expectedRoutes = ['/', '/product/', '/features/engines/', '/features/voice/', '/features/customers/', '/features/replies/', '/price/', '/help/', '/user-service-agreement/'];
 const internalChecks = [];
 const htmlMap = new Map();
 const report = (file, message) => errors.push(`${relative(root, file)}: ${message}`);
@@ -46,7 +46,7 @@ for (const [file, html] of htmlMap) {
   for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const src = /\bsrc="([^"]+)"/.exec(match[1])?.[1];
     if (src) {
-      const allowed = ['/scripts/help-search.js', tagManagerSrc];
+      const allowed = [tagManagerSrc];
       if (!allowed.includes(src)) report(file, `unexpected executable script ${src}`);
       if (src === tagManagerSrc && !/\basync\b/.test(match[1])) report(file, 'GTM loader must be async');
     } else {
@@ -57,7 +57,7 @@ for (const [file, html] of htmlMap) {
       }
     }
   }
-  for (const match of html.matchAll(/\b(?:href|src)="([^"]*)"/g)) {
+  for (const match of html.matchAll(/\b(?:href|src|poster)="([^"]*)"/g)) {
     const href = match[1].replaceAll('&amp;', '&');
     if (!href || href === '#' || /^(?:javascript:|http:|\/\/)/i.test(href)) { report(file, `unsafe or empty link ${href}`); continue; }
     if (/^(?:mailto:|tel:)/.test(href)) continue;
@@ -80,9 +80,21 @@ for (const [file, html] of htmlMap) {
   }
 }
 await Promise.all(internalChecks);
-for (const doc of docs) if (!htmlMap.has(resolve(root, 'help', doc.slug, 'index.html'))) errors.push(`Missing migrated help route ${doc.slug}`);
+for (const route of expectedRoutes) {
+  if (!htmlMap.has(resolve(root, '.' + route, 'index.html'))) errors.push(`Missing public route ${route}`);
+}
+if (files.length !== expectedRoutes.length + 1) errors.push(`Expected ${expectedRoutes.length + 1} HTML pages including 404, got ${files.length}`);
 const redirects = await readFile(resolve(root, '_redirects'), 'utf8');
 if (!redirects.includes('/price1/ /price/ 301')) errors.push('Missing old price URL redirect');
+for (const line of redirects.split('\n').filter(Boolean)) {
+  const [from,to,status] = line.trim().split(/\s+/);
+  if (status !== '301' || from === to) { errors.push(`Invalid legacy redirect ${line}`); continue; }
+  const target = new URL(to, origin);
+  const file = resolve(root, '.' + target.pathname, 'index.html');
+  if (!htmlMap.has(file)) { errors.push(`Redirect target missing: ${to}`); continue; }
+  if (target.hash && !htmlMap.get(file).includes(`id="${target.hash.slice(1)}"`)) errors.push(`Redirect anchor missing: ${to}`);
+}
+
 if (headers.split('\n').some(line => line.length > 2000)) errors.push('Cloudflare header line exceeds 2000 characters');
 if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1; }
-else console.log(`Verified ${files.length} pages: titles, descriptions, canonical URLs, sitemap, JSON-LD, local links/assets, anchors, image attributes and ${docs.length} retained help routes.`);
+else console.log(`Verified ${files.length} pages: titles, descriptions, canonical URLs, sitemap, JSON-LD, local links/assets, anchors, image attributes and legacy redirect destinations.`);

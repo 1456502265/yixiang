@@ -1,0 +1,9 @@
+---
+import FeatureLayout from '../../layouts/FeatureLayout.astro';
+import { featurePages } from '../../data/features';
+export function getStaticPaths() {
+  return featurePages.filter(feature => feature.slug !== 'chat').map(feature => ({ params: { slug: feature.slug }, props: { feature } }));
+}
+const { feature } = Astro.props;
+---
+<FeatureLayout feature={feature} />

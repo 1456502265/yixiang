@@ -1,8 +1,16 @@
----
+﻿---
 import Layout from '../layouts/SiteLayout.astro';
 import LegalDocument from '../components/LegalDocument.astro';
-import paragraphs from '../data/user-service-agreement.json';
+import terms from '../data/user-service-agreement.json';
+import privacy from '../data/privacy-policy.json';
+import { site } from '../config/site';
 ---
-<Layout title="用户服务协议：软件使用与服务条款" description="阅读译想软件现有用户服务协议，了解使用许可、服务费用、账户责任、数据处理、期限终止及争议处理条款。">
-<section class="container page-hero"><p class="eyebrow">服务协议 / TERMS</p><h1>用户服务协议。</h1><p>以下为原官网已公开的软件协议条款。注册、安装或购买前，请结合客户端当前版本的协议与具体订单条款阅读。</p></section><article class="container narrow legal-body"><LegalDocument paragraphs={paragraphs}/><p class="fine">本页面展示协议不代表你已作出同意。使用或购买客户端服务时，请在相应流程中自主确认。</p></article>
+<Layout title="用户协议与隐私政策" description="了解译想软件使用条款、费用与退款、个人信息处理及第三方服务说明，使用和购买前请阅读当前客户端及订单中的具体条款。">
+  <section class="page-heading"><div class="container"><h1>用户协议与隐私政策</h1><p>使用或购买前，请阅读相关条款。</p></div></section>
+  <nav class="container help-shortcuts" aria-label="协议目录"><a href="#terms">用户服务协议</a><a href="#privacy">隐私政策</a><a href="#website">官网与第三方服务</a></nav>
+  <article class="container legal-body">
+    <section id="terms"><h2>译想软件用户服务协议</h2><LegalDocument paragraphs={terms}/></section>
+    <section id="privacy"><h2>译想软件隐私政策</h2><LegalDocument paragraphs={privacy}/></section>
+    <section id="website" class="prose"><h2>官网与第三方服务</h2><p>本官网提供产品、价格、下载和使用说明，不提供网页注册、登录或支付。软件内的注册、购买和翻译服务适用上方软件条款及具体版本中的告知。</p><p>官网沿用已有的 Google Tag Manager 标签配置。标签加载、原生视频播放、Google Drive 下载及第三方客服链接会向相应服务发送提供功能所需的网络请求，可能包含 IP 地址、浏览器和访问页面信息。具体标签与数据处理范围以实际发布配置和对应服务规则为准。</p><p>本站不代替你授权社交账号或发送消息。请遵守当地法律与所用平台规则，不向客服提供密码、验证码或无关的私人聊天内容。</p><p>如有隐私、账户注销或删除请求，请联系 <a href={`mailto:${site.email}`}>{site.email}</a> 或 <a href={site.phoneHref}>{site.phone}</a>。</p></section>
+  </article>
 </Layout>
